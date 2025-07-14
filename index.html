@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Muni-Board.com</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <style>
+      body {
+        background-color: #192444;
+        margin: 0;
+        font-family: HelveticaNeue, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      h1 {
+        color: orange;
+        text-align: center;
+        padding: 20px 0 5px 0; /* Adjusted padding to make space for the date */
+        flex-shrink: 0;
+      }
+      .update-date {
+        color: #BBB; /* Slightly lighter color for small text */
+        font-size: 14px; /* Small text size */
+        text-align: center;
+        margin-bottom: 15px; /* Space between date and main content */
+      }
+      .main-content {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+        flex-grow: 1;
+      }
+      .section {
+        background-color: #192444;
+        border: 2px solid white;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      .city-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+      }
+      .city {
+        background-color: #192444;
+        border: 2px solid white;
+        font-size: 20px;
+        flex: 1 1 calc(33.333% - 40px);
+        min-width: 280px;
+        max-width: 380px;
+        color: white;
+        padding: 15px;
+        box-sizing: border-box;
+        text-align: center;
+      }
+      .city h2 {
+        color: white;
+        margin-top: 0;
+      }
+      .city h3 {
+        margin-top: 0;
+      }
+      .city p {
+        color: white;
+        font-size: 15px;
+      }
+      #curve_chart, #muni_curve_chart { /* Apply common styles to both charts */
+        width: 100%;
+        height: 400px; /* A stable height */
+      }
+      .date-input-container {
+        text-align: center;
+        margin-bottom: 10px;
+        color: white;
+      }
+      .date-input-container label {
+        margin-right: 10px;
+      }
+      .date-input-container input[type="date"] {
+        padding: 8px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        background-color: #333;
+        color: white;
+      }
+      .chart-message {
+        color: red;
+        text-align: center;
+        margin-top: 10px;
+      }
+      .resources-links {
+        margin-top: 10px; /* Space between title and links */
+        margin-bottom: 15px; /* Space between links and disclosure */
+      }
+      .resources-links a {
+        color: orange; /* Link color */
+        text-decoration: underline;
+        display: block; /* Each link on a new line */
+        margin-bottom: 5px;
+      }
+      .disclosure-text {
+        font-size: 12px; /* Small text as requested */
+        color: #BBB; /* Slightly lighter color for disclosure */
+        line-height: 1.5;
+      }
+      @media (min-width: 768px) {
+        .city {
+          font-size: 22px;
+        }
+      }
+      @media (min-width: 992px) {
+        .city {
+          font-size: 24px;
+        }
+      }
+    </style>
+</head>
+<body>
+
+    <h1>Muni-Board.com</h1>
+    <p id="updateAsOfDate" class="update-date">Update as of: --</p> <!-- New element for the update date -->
+
+    <div class="main-content">
+      <div class="section city-section">
+        <div class="city-container">
+          <div class="city">
+            <h2>Treasuries</h2>
+            <h3 id="treasuryYield10YValue" style="color: cyan">--.--</h3> <!-- Added ID for easy access -->
+            <p>10 Year Yield</p>
+          </div>
+          <div class="city">
+            <h2>AAA Munis</h2>
+            <h3 id="muniYield10YValue" style="color: orange">--.--</h3> <!-- Added ID for easy access -->
+            <p>10 Year Yield</p>
+          </div>
+          <!-- The following 'city' div for AAA Corporates has been removed as requested -->
+          <!--
+          <div class="city">
+            <h2>AAA Corporates</h2>
+            <p>10 Year Yield</p>
+            <h3 style="color: cyan">5.00</h3>
+          </div>
+          -->
+        </div>
+      </div>
+      <div class="section chart-section">
+        <div id="curve_chart"></div>
+      </div>
+      <div class="section chart-section"> <!-- New section for the second chart -->
+        <div class="date-input-container">
+            <label for="muniDateInput">Select Date:</label>
+            <input type="date" id="muniDateInput">
+            <div id="muniChartMessage" class="chart-message"></div>
+        </div>
+        <div id="muni_curve_chart"></div>
+      </div>
+      <div class="section text-section">
+        <h2 style="color: white;">Resources and Disclosures</h2> <!-- Changed title -->
+        <div class="resources-links">
+            <a href="https://emma.msrb.org/" target="_blank">EMMA (Electronic Municipal Market Access)</a>
+            <a href="https://www.investor.gov/introduction-investing/investing-basics/investment-products/bonds-or-fixed-income-products-0" target="_blank">Investor.gov - Bonds</a>
+        </div>
+        <p class="disclosure-text">
+          Our mission is financial literacy for the muni investor, by providing unbiased relevant information and resources, so they are better informed to make better investment decisions.<br><br>
+          Disclaimer: muni-board is not a registered investment, legal, or tax advisor. All investment/financial opinions expressed are from the personal research and experience of the owners of the site and are intended as educational material. Although best efforts are made to ensure that all information is accurate and up-to-date, occasional unintended errors and misprints may occur. -- Please direct all inquiries to admin@muni-board.com<br><br>
+          Privacy Policy: This website does not ask for, collect, or store any personal information, but may generate cookies as a participant in Google AdSense. --<br>
+          ver20250714
+        </p>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+
+      // Global variable to store muni curve data for quick lookup
+      let muniCurveDataMap = new Map(); // Stores data as 'YYYY-MM-DD' -> dataRow
+      let muniCurveHeader = [];
+      let latestMuniCurveDate = ''; // Stores the most recent date string 'YYYY-MM-DD'
+
+      // Call both chart drawing functions on load and resize
+      google.charts.setOnLoadCallback(function() {
+        drawMainChart();
+        loadAndDrawMuniCurveChart(); // Initial load for muni curve chart
+      });
+
+      // Redraw both charts whenever the browser window is resized.
+      window.onresize = function() {
+        drawMainChart();
+        // Redraw muni curve chart with the currently selected date
+        const selectedDate = document.getElementById('muniDateInput').value;
+        updateMuniCurveChart(selectedDate);
+      };
+
+      function drawMainChart() {
+        const chartContainer = document.getElementById('curve_chart');
+        chartContainer.innerHTML = ''; // Clear the chart container before redrawing.
+
+        const treasuryYieldElement = document.getElementById('treasuryYield10YValue');
+        const muniYieldElement = document.getElementById('muniYield10YValue');
+        const updateDateElement = document.getElementById('updateAsOfDate'); // Get the new update date element
+
+        treasuryYieldElement.textContent = '--.--';
+        muniYieldElement.textContent = '--.--';
+        updateDateElement.textContent = 'Update as of: --'; // Set initial placeholder
+
+        fetch('data/data.json')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok: ' + response.status + ' ' + response.statusText);
+            }
+            return response.json();
+          })
+          .then(jsonData => {
+            console.log("Fetched Main Chart JSON data:", jsonData);
+
+            if (!jsonData || jsonData.length <= 1) {
+                chartContainer.innerHTML = '<p style="color:red; text-align:center;">No data or only headers found for main chart. Chart cannot be rendered.</p>';
+                console.warn("data.json is empty or contains insufficient data for main chart.");
+                return;
+            }
+
+            const data = new google.visualization.DataTable();
+            data.addColumn('date', jsonData[0][0]);
+            data.addColumn('number', jsonData[0][1]);
+            data.addColumn('number', jsonData[0][2]);
+
+            const lastRowIndex = jsonData.length - 1;
+            const latestDataRow = jsonData[lastRowIndex];
+
+            muniYieldElement.textContent = latestDataRow[1].toFixed(2);
+            treasuryYieldElement.textContent = latestDataRow[2].toFixed(2);
+
+            // Update the "Update as of" date
+            const latestDateArray = latestDataRow[0];
+            const latestDate = new Date(latestDateArray[0], latestDateArray[1], latestDateArray[2]);
+            updateDateElement.textContent = `Update as of: ${latestDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}`;
+
+
+            for (let i = 1; i < jsonData.length; i++) {
+                const row = jsonData[i];
+                const dateArray = row[0];
+                const chartDate = new Date(dateArray[0], dateArray[1], dateArray[2]);
+                data.addRow([chartDate, row[1], row[2]]);
+            }
+
+            console.log("Google DataTable for Main Chart after conversion:", data.toJSON());
+
+            var options = {
+              title: 'Muni vs. Treasury Yields (10 Year)',
+              titleTextStyle: { color: '#FFF' },
+              curveType: 'function',
+              legend: { position: 'bottom', textStyle: { color: '#FFF' } },
+              backgroundColor: '#192444',
+              colors: ['orange', 'cyan'],
+              hAxis: {
+                title: 'Date',
+                titleTextStyle: { color: '#FFF' },
+                textStyle: { color: '#FFF' },
+                gridlines: { color: 'transparent' }
+              },
+              vAxis: {
+                title: 'Yield (%)',
+                titleTextStyle: { color: '#FFF' },
+                textStyle: { color: '#FFF' },
+                gridlines: { color: '#444' }
+              },
+              width: '100%',
+              height: '100%',
+              chartArea: {
+                left: '10%',
+                top: '10%',
+                width: '80%',
+                height: '70%'
+              }
+            };
+
+            var chart = new google.visualization.LineChart(chartContainer);
+            chart.draw(data, options);
+            console.log("Main Chart drawing initiated.");
+          })
+          .catch(error => {
+            console.error('Error loading or processing main chart data:', error);
+            chartContainer.innerHTML = '<p style="color:red; text-align:center;">Error loading main chart data. Please ensure "data/data.json" exists and is correctly formatted. If running locally, ensure you are serving the file via a local web server (e.g., Python\'s http.server) and the path is correct.</p>';
+            treasuryYieldElement.textContent = 'N/A';
+            muniYieldElement.textContent = 'N/A';
+            updateDateElement.textContent = 'Update as of: N/A'; // Update on error
+          });
+      }
+
+      // Function to format a Date object or [year, month-1, day] array to YYYY-MM-DD string
+      function formatDateToYYYYMMDD(dateInput) {
+        let date;
+        if (Array.isArray(dateInput)) {
+            date = new Date(dateInput[0], dateInput[1], dateInput[2]);
+        } else if (dateInput instanceof Date) {
+            date = dateInput;
+        } else {
+            return ''; // Invalid input
+        }
+
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-indexed
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+
+      // Initial load and setup for the Muni Curve Chart
+      function loadAndDrawMuniCurveChart() {
+        const dateInput = document.getElementById('muniDateInput');
+        const muniChartMessage = document.getElementById('muniChartMessage');
+
+        fetch('data/dataMuniCurve.json')
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok: ' + response.status + ' ' + response.statusText);
+            }
+            return response.json();
+          })
+          .then(jsonData => {
+            console.log("Fetched Muni Curve Chart JSON data:", jsonData);
+
+            if (!jsonData || jsonData.length <= 1) {
+                muniChartMessage.textContent = 'No data or only headers found for muni curve chart. Cannot render.';
+                console.warn("dataMuniCurve.json is empty or contains insufficient data for charting.");
+                return;
+            }
+
+            muniCurveHeader = jsonData[0]; // Store header
+            muniCurveDataMap = new Map(); // Reset map
+
+            // Populate the map with data, using YYYY-MM-DD date strings as keys
+            for (let i = 1; i < jsonData.length; i++) {
+                const row = jsonData[i];
+                const dateArray = row[0]; // [year, month-1, day]
+                const dateString = formatDateToYYYYMMDD(dateArray);
+                muniCurveDataMap.set(dateString, row);
+            }
+
+            // Determine the most recent date and set it as default
+            const sortedDates = Array.from(muniCurveDataMap.keys()).sort();
+            latestMuniCurveDate = sortedDates[sortedDates.length - 1];
+
+            dateInput.value = latestMuniCurveDate; // Set default date in input
+            dateInput.addEventListener('change', (event) => {
+                updateMuniCurveChart(event.target.value);
+            });
+
+            // Draw the chart for the most recent date initially
+            updateMuniCurveChart(latestMuniCurveDate);
+
+          })
+          .catch(error => {
+            console.error('Error loading or processing muni curve chart data:', error);
+            muniChartMessage.textContent = 'Error loading muni curve chart data. Please check file and path.';
+          });
+      }
+
+      // Function to update and draw the Muni Curve Chart for a specific date
+      function updateMuniCurveChart(selectedDateString) {
+        const chartContainer = document.getElementById('muni_curve_chart');
+        const muniChartMessage = document.getElementById('muniChartMessage');
+        chartContainer.innerHTML = ''; // Clear chart area
+        muniChartMessage.textContent = ''; // Clear previous messages
+
+        const dataRow = muniCurveDataMap.get(selectedDateString);
+
+        if (!dataRow) {
+            muniChartMessage.textContent = `Data not available for ${selectedDateString}.`;
+            console.warn(`Data not found for date: ${selectedDateString}`);
+            return;
+        }
+
+        // Create a new DataTable for the muni curve chart
+        const data = new google.visualization.DataTable();
+        data.addColumn('number', 'Maturity (Years)'); // X-axis: Maturity
+        data.addColumn('number', 'Yield (%)');        // Y-axis: Yield
+
+        // Add rows for each maturity from the selected data row
+        // The JSON structure is [date, 1Y, 2Y, 5Y, 10Y, 30Y]
+        data.addRow([1, dataRow[1]]);  // 1-year yield
+        data.addRow([2, dataRow[2]]);  // 2-year yield
+        data.addRow([5, dataRow[3]]);  // 5-year yield
+        data.addRow([10, dataRow[4]]); // 10-year yield
+        data.addRow([30, dataRow[5]]); // 30-year yield
+
+        console.log("Google DataTable for Muni Curve Chart after conversion:", data.toJSON());
+
+        var options = {
+          title: `Muni Yield Curve as of ${selectedDateString}`, // Dynamic title
+          titleTextStyle: { color: '#FFF' },
+          curveType: 'function',
+          legend: 'none',
+          backgroundColor: '#192444',
+          colors: ['orange'],
+          hAxis: {
+            title: 'Maturity (Years)',
+            titleTextStyle: { color: '#FFF' },
+            textStyle: { color: '#FFF' },
+            gridlines: { color: '#444' },
+            ticks: [1, 2, 5, 10, 30]
+          },
+          vAxis: {
+            title: 'Yield (%)',
+            titleTextStyle: { color: '#FFF' },
+            textStyle: { color: '#FFF' },
+            gridlines: { color: '#444' }
+          },
+          width: '100%',
+          height: '100%',
+          chartArea: {
+            left: '10%',
+            top: '10%',
+            width: '80%',
+            height: '70%'
+          }
+        };
+
+        var chart = new google.visualization.LineChart(chartContainer);
+        chart.draw(data, options);
+        console.log("Muni Curve Chart drawing initiated for date:", selectedDateString);
+      }
+    </script>
+</body>
+</html>
