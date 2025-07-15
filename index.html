@@ -6,7 +6,8 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <style>
       body {
-        background-color: #192444;
+        background-color: #192444;		  
+/*      background-color: #1f2c56; */
         margin: 0;
         font-family: HelveticaNeue, sans-serif;
         min-height: 100vh;
@@ -30,13 +31,14 @@
         grid-template-columns: 1fr;
         gap: 20px;
         padding: 20px;
-        max-width: 1200px;
+/*        max-width: 1200px;*/
+		max-width: 90%;
         margin: 0 auto;
         flex-grow: 1;
       }
       .section {
-        background-color: #192444;
-        border: 2px solid white;
+        background-color: #1f2c56;
+/*      border: 1px solid white; */
         padding: 20px;
         box-sizing: border-box;
       }
@@ -47,7 +49,7 @@
         gap: 20px;
       }
       .city {
-        background-color: #192444;
+        background-color: #1f2c56;
         border: 2px solid white;
         font-size: 20px;
         flex: 1 1 calc(33.333% - 40px);
@@ -255,7 +257,7 @@
               titleTextStyle: { color: '#FFF' },
               curveType: 'function',
               legend: { position: 'bottom', textStyle: { color: '#FFF' } },
-              backgroundColor: '#192444',
+              backgroundColor: '#1f2c56',
               colors: ['orange', 'cyan'],
               hAxis: {
                 title: 'Date',
@@ -395,7 +397,7 @@
           titleTextStyle: { color: '#FFF' },
           curveType: 'function',
           legend: 'none',
-          backgroundColor: '#192444',
+          backgroundColor: '#1f2c56',
           colors: ['orange'],
           hAxis: {
             title: 'Maturity (Years)',
